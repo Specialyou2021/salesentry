@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#9b1c3a">
+<title>SpecialYou — Daily Entry</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --brand: #9b1c3a; --brand-light: #b82244; --brand-bg: #fdf2f4;
+  --bg: #f7f8fa; --white: #fff; --border: #e8eaed;
+  --text: #1a1d23; --text2: #6b7280; --text3: #9ca3af;
+  --green: #16a34a; --green-bg: #f0fdf4;
+  --red: #dc2626; --red-bg: #fef2f2;
+  --yellow: #d97706; --yellow-bg: #fffbeb;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+html { height: 100%; height: -webkit-fill-available; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; min-height: 100vh; min-height: -webkit-fill-available; }
+
+/* ── LOGIN ── */
+#login-screen { position:fixed; inset:0; z-index:9999; display:flex; flex-direction:row; overflow-y:auto; }
+.login-left { width:51%; background:var(--brand); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 40px; position:relative; overflow:hidden; min-height:100%; }
+.login-left::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 70% 60% at 30% 40%,rgba(255,255,255,.06) 0%,transparent 60%); }
+.ll-inner { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; }
+.login-logo-box { background:white; border-radius:16px; width:150px; height:150px; display:flex; align-items:center; justify-content:center; margin-bottom:28px; box-shadow:0 20px 60px rgba(0,0,0,.2); }
+.login-logo-inner { display:flex; flex-direction:column; align-items:center; }
+.login-logo-inner .heart { font-size:20px; color:var(--brand); margin-bottom:3px; }
+.login-logo-inner .wordmark { font-size:22px; font-weight:800; color:var(--brand); }
+.login-tagline { text-align:center; color:rgba(255,255,255,.9); }
+.login-tagline h2 { font-size:24px; font-weight:800; margin-bottom:8px; color:white; }
+.login-tagline p { font-size:13px; opacity:.8; max-width:280px; line-height:1.6; }
+.platform-chips { display:flex; flex-wrap:wrap; gap:7px; margin-top:24px; justify-content:center; }
+.chip { background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25); border-radius:20px; padding:4px 12px; font-size:11px; color:white; font-weight:500; }
+.login-right { flex:1; background:#f8f9fb; display:flex; align-items:center; justify-content:center; padding:32px 24px; }
+.login-card { width:100%; max-width:360px; background:white; border-radius:16px; padding:32px 28px; box-shadow:0 4px 24px rgba(0,0,0,.08); }
+.login-card h3 { font-size:20px; font-weight:800; margin-bottom:4px; }
+.login-card>p { color:var(--text2); font-size:13px; margin-bottom:22px; }
+.form-group { margin-bottom:13px; }
+.form-group label { display:block; font-size:13px; font-weight:600; margin-bottom:6px; }
+.input-wrap { position:relative; }
+.input-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text3); font-size:14px; pointer-events:none; }
+.form-group input { width:100%; padding:12px 38px; border:1.5px solid var(--border); border-radius:10px; font-family:'Plus Jakarta Sans',sans-serif; font-size:16px; color:var(--text); background:white; outline:none; transition:border-color .2s; -webkit-appearance:none; }
+.form-group input:focus { border-color:var(--brand); }
+.eye-btn { position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text3); font-size:18px; padding:4px; }
+.login-btn { width:100%; padding:14px; background:var(--brand); border:none; border-radius:10px; color:white; font-size:15px; font-weight:700; cursor:pointer; margin-top:6px; font-family:'Plus Jakarta Sans',sans-serif; transition:background .15s; }
+.login-btn:active { background:var(--brand-light); }
+.login-error { color:var(--red); font-size:12px; text-align:center; margin-top:8px; min-height:16px; }
+
+/* ── APP ── */
+#app { display:none; min-height:100vh; }
+.topbar { background:white; border-bottom:1px solid var(--border); padding:0 16px; height:54px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:50; }
+.topbar-left { display:flex; align-items:center; gap:10px; }
+.logo-mark { width:28px; height:28px; background:var(--brand); border-radius:7px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:white; }
+.topbar-title { font-size:15px; font-weight:800; }
+.topbar-right { display:flex; align-items:center; gap:10px; }
+.user-pill { display:flex; align-items:center; gap:6px; background:var(--bg); border:1px solid var(--border); border-radius:20px; padding:5px 12px 5px 5px; }
+.user-av { width:24px; height:24px; border-radius:50%; background:var(--brand); color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; }
+.user-name { font-size:12px; font-weight:600; }
+.signout-btn { background:none; border:none; cursor:pointer; font-size:12px; color:var(--text2); font-family:'Plus Jakarta Sans',sans-serif; }
+.signout-btn:hover { color:var(--red); }
+
+/* Stats bar */
+.stats-bar { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; padding:14px 16px; background:white; border-bottom:1px solid var(--border); }
+.stat-item { text-align:center; }
+.stat-val { font-size:18px; font-weight:800; color:var(--brand); }
+.stat-lbl { font-size:10px; color:var(--text3); font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-top:2px; }
+
+/* Tabs */
+.tab-bar { display:flex; background:white; border-bottom:1px solid var(--border); }
+.tab-item { flex:1; padding:12px; text-align:center; font-size:13px; font-weight:600; color:var(--text2); cursor:pointer; border-bottom:2px solid transparent; transition:all .15s; }
+.tab-item.active { color:var(--brand); border-bottom-color:var(--brand); }
+
+/* Content */
+.content { padding:16px; max-width:960px; margin:0 auto; padding-bottom:40px; }
+
+/* ── BULK ENTRY ── */
+.bulk-card { background:white; border:1px solid var(--border); border-radius:12px; margin-bottom:14px; overflow:hidden; margin-left:-4px; margin-right:-4px; }
+.bulk-header { padding:12px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.bulk-header-left { display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+.bulk-header h3 { font-size:14px; font-weight:800; }
+.date-pill { display:flex; align-items:center; gap:8px; background:var(--bg); border:1.5px solid var(--border); border-radius:8px; padding:7px 12px; }
+.date-pill label { font-size:11px; font-weight:700; color:var(--text2); text-transform:uppercase; letter-spacing:.5px; white-space:nowrap; }
+.date-pill input[type=date] { border:none; background:transparent; font-family:'Plus Jakarta Sans',sans-serif; font-size:13px; font-weight:700; color:var(--text); outline:none; -webkit-appearance:none; }
+.date-pill input[type=date]:focus { color:var(--brand); }
+
+.progress-bar-wrap { display:flex; align-items:center; gap:8px; }
+.progress-track { width:70px; height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+.progress-fill { height:100%; background:var(--green); border-radius:3px; transition:width .3s; }
+.progress-label { font-size:11px; font-weight:700; color:var(--text2); font-family:'DM Mono',monospace; white-space:nowrap; }
+
+.bulk-save-btn { background:var(--brand); color:white; border:none; border-radius:7px; padding:7px 14px; font-size:12px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; transition:background .15s; white-space:nowrap; }
+.bulk-save-btn:hover { background:var(--brand-light); }
+.bulk-save-btn:disabled { background:var(--text3); cursor:not-allowed; }
+
+/* Grid table */
+.bulk-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+.bulk-grid { width:100%; border-collapse:collapse; min-width:620px; }
+.bulk-grid thead th {
+  padding:7px 7px; text-align:left; font-size:10px; font-weight:700;
+  color:var(--text3); text-transform:uppercase; letter-spacing:.7px;
+  background:#fafbfc; border-bottom:1px solid var(--border);
+  white-space:nowrap; position:sticky; top:0; z-index:2;
+}
+.bulk-grid thead th:first-child { min-width:120px; }
+.bulk-grid tbody tr { border-bottom:1px solid #f3f4f6; transition:background .15s; }
+.bulk-grid tbody tr:last-child { border-bottom:none; }
+.bulk-grid tbody tr.row-done { background:#f8fdf9; }
+.bulk-grid tbody tr.row-done td.plat-cell .plat-name { color:var(--text3); }
+.bulk-grid tbody tr.row-editing { background:#fdf8ff; }
+
+.plat-cell { padding:7px 10px; white-space:nowrap; min-width:105px; }
+.plat-name { font-size:12px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:6px; }
+.plat-status { font-size:10px; font-weight:600; }
+.status-done { color:var(--green); }
+.status-empty { color:var(--text3); }
+.status-editing { color:#7c3aed; }
+
+.cell-input { padding:6px 6px; }
+.cell-input input {
+  width:100%; border:1.5px solid transparent; border-radius:6px;
+  padding:5px 6px; font-family:'DM Mono',monospace; font-size:12px;
+  color:var(--text); background:#f7f8fa; outline:none; transition:all .15s;
+  -webkit-appearance:none; min-width:56px;
+}
+.cell-input input:focus { border-color:var(--brand); background:white; }
+
+/* done row inputs are faded */
+tr.row-done .cell-input input { color:var(--text3); background:#f0fdf4; }
+tr.row-done .cell-input input:focus { color:var(--text); background:white; border-color:var(--brand); }
+
+.row-action-cell { padding:6px 8px; white-space:nowrap; }
+.edit-row-btn { background:none; border:1px solid #93c5fd; color:#2563eb; border-radius:6px; padding:4px 8px; font-size:11px; cursor:pointer; font-weight:700; }
+.save-row-btn { background:var(--green); color:white; border:none; border-radius:6px; padding:4px 8px; font-size:11px; cursor:pointer; font-weight:700; margin-right:3px; }
+.clear-row-btn { background:none; border:1px solid var(--border); color:var(--text2); border-radius:6px; padding:4px 7px; font-size:11px; cursor:pointer; font-weight:700; }
+
+.notes-input { min-width:70px !important; }
+
+.submit-btn { width:100%; padding:15px; background:var(--brand); border:none; border-radius:10px; color:white; font-size:15px; font-weight:700; cursor:pointer; font-family:'Plus Jakarta Sans',sans-serif; margin-top:14px; transition:background .15s; }
+.submit-btn:hover { background:var(--brand-light); }
+.submit-btn:disabled { background:var(--text3); cursor:not-allowed; }
+
+/* History */
+.table-wrap { background:white; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin-bottom:14px; }
+.table-head { padding:12px 14px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.table-head h4 { font-size:13px; font-weight:700; }
+.table-head span { font-size:11px; color:var(--text2); font-family:'DM Mono',monospace; }
+.table-scroll { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+table { width:100%; border-collapse:collapse; min-width:640px; }
+thead th { padding:9px 12px; text-align:left; font-size:10px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:.8px; background:#fafbfc; border-bottom:1px solid var(--border); white-space:nowrap; }
+tbody tr { border-bottom:1px solid #f3f4f6; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:active { background:#fafbfc; }
+tbody td { padding:10px 12px; font-size:12px; white-space:nowrap; color:var(--text2); }
+tbody td:first-child { color:var(--text); font-weight:600; }
+.empty { padding:32px; text-align:center; color:var(--text3); font-size:13px; }
+
+/* Badge */
+.badge { display:inline-flex; align-items:center; padding:2px 7px; border-radius:5px; font-size:10px; font-weight:700; }
+.bbrand { background:var(--brand-bg); color:var(--brand); }
+
+/* Toast */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; background:var(--text); color:white; border-radius:10px; padding:11px 20px; font-size:13px; font-weight:600; box-shadow:0 8px 24px rgba(0,0,0,.2); animation:toastPop .3s ease; white-space:nowrap; }
+.toast.success { background:var(--green); }
+.toast.error { background:var(--red); }
+@keyframes toastPop { from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+/* Responsive */
+@media(max-width:600px) {
+  #login-screen { flex-direction:column; }
+  .login-left { width:100%; min-height:auto; padding:24px 20px; flex-direction:row; gap:16px; align-items:center; justify-content:flex-start; }
+  .ll-inner { flex-direction:row; gap:14px; align-items:center; width:100%; }
+  .login-logo-box { width:68px; height:68px; border-radius:10px; flex-shrink:0; margin-bottom:0; }
+  .login-logo-inner .heart { font-size:13px; }
+  .login-logo-inner .wordmark { font-size:14px; }
+  .login-tagline { text-align:left; flex:1; }
+  .login-tagline h2 { font-size:17px; margin-bottom:3px; }
+  .login-tagline p { font-size:12px; max-width:none; }
+  .platform-chips { display:none; }
+  .login-right { flex:1; padding:20px 16px 32px; background:white; align-items:flex-start; }
+  .login-card { box-shadow:none; padding:0; }
+  .field-grid { grid-template-columns:1fr; }
+  .field-full { grid-column:1; }
+  .stats-bar { gap:6px; padding:12px; }
+  .stat-val { font-size:16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-left">
+    <div class="ll-inner">
+      <div class="login-logo-box">
+        <div class="login-logo-inner">
+          <span class="heart">♥</span>
+          <span class="wordmark">SpecialYou</span>
+        </div>
+      </div>
+      <div class="login-tagline">
+        <h2>Daily Entry</h2>
+        <p>Add daily sales data across all platforms</p>
+      </div>
+    </div>
+    <div class="platform-chips">
+      <span class="chip">Amazon</span><span class="chip">Flipkart</span>
+      <span class="chip">Myntra</span><span class="chip">Blinkit</span>
+      <span class="chip">+8 more</span>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h3>Welcome back</h3>
+      <p>Sign in to add today's sales data</p>
+      <div class="form-group">
+        <label>Email</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉</span>
+          <input type="email" id="l-email" placeholder="your@specialyou.in" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+          <button class="eye-btn" onclick="document.getElementById('l-pass').type=document.getElementById('l-pass').type==='password'?'text':'password'" type="button">👁</button>
+        </div>
+      </div>
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Sign in →</button>
+      <div class="login-error" id="l-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark">S</div>
+      <div class="topbar-title">Daily Entry</div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-pill">
+        <div class="user-av" id="user-av">?</div>
+        <div class="user-name" id="user-name">—</div>
+      </div>
+      <button class="signout-btn" onclick="doLogout()">↩ Out</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-val" id="stat-today">0</div>
+      <div class="stat-lbl">Today's Entries</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val" id="stat-month">0</div>
+      <div class="stat-lbl">This Month</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-val" id="stat-rev">₹0</div>
+      <div class="stat-lbl">Today's Revenue</div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="tab-item active" id="tab-entry" onclick="showTab('entry')">➕ New Entry</div>
+    <div class="tab-item" id="tab-history" onclick="showTab('history')">📋 History</div>
+    <div class="tab-item" id="tab-settings" onclick="showTab('settings')">⚙️ Settings</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ENTRY TAB — Excel Bulk Mode -->
+    <div id="pane-entry">
+      <div class="bulk-card">
+        <div class="bulk-header">
+          <div class="bulk-header-left">
+            <h3>Bulk Entry</h3>
+            <div class="date-pill">
+              <label>Date</label>
+              <input type="date" id="bulk-date" onchange="onDateChange()">
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <div class="progress-bar-wrap">
+              <div class="progress-track"><div class="progress-fill" id="bulk-progress-fill" style="width:0%"></div></div>
+              <span class="progress-label" id="bulk-progress-label">0 / 12</span>
+            </div>
+            <button class="bulk-save-btn" id="bulk-save-all-btn" onclick="saveAllDirty()">💾 Save All</button>
+          </div>
+        </div>
+        <div class="bulk-scroll">
+          <table class="bulk-grid" id="bulk-grid-table">
+            <thead>
+              <tr>
+                <th>Platform</th>
+                <th>Revenue (₹)</th>
+                <th>Orders</th>
+                <th>Returns (₹)</th>
+                <th>Ret. Units</th>
+                <th>Ad Spend (₹)</th>
+                <th>Pending (₹)</th>
+                <th>Late Disp.</th>
+                <th>Notes</th>
+                <th>Author</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="bulk-grid-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY TAB -->
+    <div id="pane-history" style="display:none">
+      <div class="table-wrap">
+        <div class="table-head">
+          <h4>Recent Entries</h4>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span id="hist-count" style="font-size:11px;color:var(--text2);font-family:'DM Mono',monospace;">—</span>
+            <button onclick="exportCSV()" style="background:var(--brand);color:white;border:none;border-radius:6px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;">⬇ Export CSV</button>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <div id="history-body" class="empty">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS TAB -->
+    <div id="pane-settings" style="display:none">
+      <div class="form-card">
+        <div class="form-card-head">
+          <h3>Change Password</h3>
+          <p>Set a new password for your account</p>
+        </div>
+        <div class="field-grid">
+          <div class="field field-full">
+            <label>New Password</label>
+            <input type="password" id="s-newpass" placeholder="Min 6 characters">
+          </div>
+          <div class="field field-full">
+            <label>Confirm Password</label>
+            <input type="password" id="s-confirmpass" placeholder="Confirm new password">
+          </div>
+        </div>
+        <button class="submit-btn" onclick="changePassword()">Update Password →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast-el" style="display:none"></div>
+
+<script>
+// ── CONFIG — fill these ──
+const SB_URL = 'https://bxagimzgererdeurwckn.supabase.co';       // e.g. https://xxxx.supabase.co
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ4YWdpbXpnZXJlcmRldXJ3Y2tuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2MzI3ODIsImV4cCI6MjA5NjIwODc4Mn0.qsTVDQ_3sfguMyvIjiHD6vvKXgf8aJqAj226Nyv6Hwk';
+
+let currentUser = null;
+let currentProfile = null;
+
+// ── AUTH ──
+async function doLogin() {
+  const email = document.getElementById('l-email').value.trim();
+  const pass  = document.getElementById('l-pass').value;
+  const errEl = document.getElementById('l-error');
+  const btn   = document.getElementById('login-btn');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Please enter email and password'; return; }
+  btn.disabled = true; btn.textContent = 'Signing in...';
+  try {
+    const res = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SB_KEY },
+      body: JSON.stringify({ email, password: pass })
+    });
+    const data = await res.json();
+    if (!data.access_token) {
+      errEl.textContent = data.error_description || 'Login failed — check credentials';
+      btn.disabled = false; btn.textContent = 'Sign in →'; return;
+    }
+    currentUser = data;
+    localStorage.setItem('sy_entry_session', JSON.stringify(data));
+    await initApp();
+  } catch(e) {
+    errEl.textContent = 'Connection error — check URL';
+    btn.disabled = false; btn.textContent = 'Sign in →';
+  }
+}
+
+async function initApp() {
+  // Skip profile check — allow all authenticated users
+  currentProfile = { 
+    full_name: currentUser.user.email.split('@')[0], 
+    email: currentUser.user.email,
+    role: 'user',
+    is_active: true
+  };
+
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  const name = currentProfile.full_name || currentProfile.email.split('@')[0];
+  const initials = name.slice(0,2).toUpperCase();
+  document.getElementById('user-av').textContent = initials;
+  document.getElementById('user-name').textContent = name;
+
+  // Set today's date
+  // Set today's date on bulk entry grid and load it
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('bulk-date').value = today;
+  bulkDate = today;
+  loadBulkGrid();
+
+  loadStats();
+}
+
+function doLogout() {
+  localStorage.removeItem('sy_entry_session');
+  currentUser = null; currentProfile = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').textContent = 'Sign in →';
+}
+
+// ── STATS ──
+async function loadStats() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const monthStart = today.slice(0,7) + '-01';
+    const res = await fetch(`${SB_URL}/rest/v1/daily_sales?select=date,revenue,platform&order=date.desc&limit=1000`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${currentUser.access_token}` }
+    });
+    const rows = await res.json();
+    const todayRows = rows.filter(r => r.date === today);
+    const monthRows = rows.filter(r => r.date >= monthStart);
+    const todayRev  = todayRows.reduce((s,r) => s + (Number(r.revenue)||0), 0);
+    document.getElementById('stat-today').textContent = todayRows.length;
+    document.getElementById('stat-month').textContent = monthRows.length;
+    document.getElementById('stat-rev').textContent   = fmtRev(todayRev);
+  } catch(e) { console.error(e); }
+}
+
+function fmtRev(n) {
+  n = Number(n)||0;
+  if (n >= 100000) return '₹' + (n/100000).toFixed(1) + 'L';
+  if (n >= 1000)   return '₹' + (n/1000).toFixed(1) + 'K';
+  return '₹' + n.toFixed(0);
+}
+
+// ── BULK ENTRY ──
+const PLATFORMS = ['Amazon','Flipkart','Myntra','Nykaa','Blinkit','Zepto','Swiggy','JioMart','TataCliq','FirstCry','Website','MNow'];
+
+// rowState: keyed by platform — { id, saved: bool, dirty: bool, data: {} }
+let bulkRowState = {};
+let bulkDate = '';
+
+function onDateChange() {
+  bulkDate = document.getElementById('bulk-date').value;
+  if (!bulkDate) return;
+  loadBulkGrid();
+}
+
+async function loadBulkGrid() {
+  if (!bulkDate || !currentUser) return;
+  const body = document.getElementById('bulk-grid-body');
+  body.innerHTML = PLATFORMS.map(p => `<tr id="brow-${p}"><td colspan="10" style="padding:10px 12px;font-size:12px;color:var(--text3);">Loading ${p}...</td></tr>`).join('');
+
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/daily_sales?select=id,date,platform,revenue,orders,returns,return_units,ad_spend,pending,late_dispatch,notes,created_by&date=eq.${bulkDate}&limit=50`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${currentUser.access_token}` }
+    });
+    const rows = await res.json();
+
+    // Build state map
+    bulkRowState = {};
+    PLATFORMS.forEach(p => {
+      const existing = rows.find(r => r.platform === p);
+      bulkRowState[p] = existing
+        ? { id: existing.id, saved: true, dirty: false, data: { ...existing } }
+        : { id: null, saved: false, dirty: false, data: {} };
+    });
+
+    renderBulkGrid();
+  } catch(e) {
+    body.innerHTML = `<tr><td colspan="10" style="padding:16px;color:var(--red);font-size:12px;">Error loading data: ${e.message}</td></tr>`;
+  }
+}
+
+function renderBulkGrid() {
+  const body = document.getElementById('bulk-grid-body');
+  body.innerHTML = PLATFORMS.map(p => buildBulkRow(p)).join('');
+  updateProgress();
+}
+
+function buildBulkRow(p) {
+  const s = bulkRowState[p];
+  const d = s.data;
+  const isDone = s.saved;
+  const isDirty = s.dirty;
+  const rowClass = isDone ? 'row-done' : (isDirty ? 'row-editing' : '');
+  const statusIcon = isDone ? '<span class="plat-status status-done">✓ saved</span>' : (isDirty ? '<span class="plat-status status-editing">● unsaved</span>' : '<span class="plat-status status-empty">— empty</span>');
+
+  const inp = (field, placeholder, step) => {
+    const val = d[field] !== undefined && d[field] !== null ? d[field] : '';
+    return `<input type="number" min="0" ${step ? 'step="0.01"' : ''} placeholder="${placeholder}" value="${val}"
+      id="bi-${p}-${field}"
+      oninput="onBulkInput('${p}')"
+      onkeydown="handleBulkKey(event,'${p}','${field}')"
+    >`;
+  };
+  const notesVal = d.notes || '';
+
+  return `<tr id="brow-${p}" class="${rowClass}">
+    <td class="plat-cell">
+      <div class="plat-name">${p} ${statusIcon}</div>
+    </td>
+    <td class="cell-input">${inp('revenue','0',true)}</td>
+    <td class="cell-input">${inp('orders','0',false)}</td>
+    <td class="cell-input">${inp('returns','0',true)}</td>
+    <td class="cell-input">${inp('return_units','0',false)}</td>
+    <td class="cell-input">${inp('ad_spend','0',true)}</td>
+    <td class="cell-input">${inp('pending','0',true)}</td>
+    <td class="cell-input">${inp('late_dispatch','0',false)}</td>
+    <td class="cell-input">
+      <input type="text" placeholder="Notes..." value="${notesVal.replace(/"/g,'&quot;')}"
+        id="bi-${p}-notes"
+        class="notes-input"
+        oninput="onBulkInput('${p}')"
+        style="min-width:90px;"
+      >
+    </td>
+    <td style="padding:6px 10px;white-space:nowrap;">
+      ${s.saved && d.created_by
+        ? `<span style="font-size:11px;font-weight:700;color:var(--text2);background:var(--bg);border:1px solid var(--border);border-radius:5px;padding:3px 8px;display:inline-block;">${d.created_by}</span>`
+        : `<span style="font-size:11px;color:var(--text3);">—</span>`
+      }
+    </td>
+    <td class="row-action-cell">
+      ${isDone
+        ? `<button class="save-row-btn" onclick="saveRow('${p}')">✓</button><button class="clear-row-btn" onclick="clearRow('${p}')">✕</button>`
+        : `<button class="save-row-btn" onclick="saveRow('${p}')">Save</button>`
+      }
+    </td>
+  </tr>`;
+}
+
+function onBulkInput(p) {
+  const s = bulkRowState[p];
+  s.dirty = true;
+  // update row class
+  const tr = document.getElementById('brow-' + p);
+  if (tr) {
+    tr.className = s.saved ? 'row-done row-editing' : 'row-editing';
+    // update status icon
+    const nameEl = tr.querySelector('.plat-name');
+    if (nameEl) {
+      nameEl.innerHTML = p + ' <span class="plat-status status-editing">● editing</span>';
+    }
+  }
+  // Auto-calc returns from return_units
+  const rev = parseFloat(document.getElementById(`bi-${p}-revenue`)?.value) || 0;
+  const ord = parseInt(document.getElementById(`bi-${p}-orders`)?.value) || 0;
+  const ru  = parseInt(document.getElementById(`bi-${p}-return_units`)?.value) || 0;
+  if (rev > 0 && ord > 0 && ru > 0) {
+    const auto = Math.round((rev / ord) * ru * 100) / 100;
+    const retEl = document.getElementById(`bi-${p}-returns`);
+    if (retEl && !retEl._manuallyEdited) retEl.value = auto;
+  }
+}
+
+function handleBulkKey(e, p, field) {
+  if (e.key === 'Enter' || e.key === 'Tab') {
+    // Tab moves to next platform's revenue
+    const fields = ['revenue','orders','returns','return_units','ad_spend','pending','late_dispatch','notes'];
+    const fi = fields.indexOf(field);
+    if (e.key === 'Enter' || (e.key === 'Tab' && fi === fields.length - 1)) {
+      e.preventDefault();
+      const pi = PLATFORMS.indexOf(p);
+      const nextP = PLATFORMS[pi + 1];
+      if (nextP) document.getElementById(`bi-${nextP}-revenue`)?.focus();
+    }
+  }
+}
+
+function getRowPayload(p) {
+  const get = (field, isFloat) => {
+    const el = document.getElementById(`bi-${p}-${field}`);
+    if (!el || el.value === '') return 0;
+    return isFloat ? (parseFloat(el.value) || 0) : (parseInt(el.value) || 0);
+  };
+  const notes = document.getElementById(`bi-${p}-notes`)?.value.trim() || null;
+  const author = currentProfile?.full_name || currentProfile?.email?.split('@')[0] || null;
+  return {
+    date: bulkDate,
+    platform: p,
+    revenue:       get('revenue', true),
+    orders:        get('orders', false),
+    returns:       get('returns', true),
+    return_units:  get('return_units', false),
+    ad_spend:      get('ad_spend', true),
+    pending:       get('pending', true),
+    late_dispatch: get('late_dispatch', false),
+    notes,
+    created_by: author
+  };
+}
+
+async function saveRow(p) {
+  if (!bulkDate) { showToast('Please select a date first', 'error'); return; }
+  const s = bulkRowState[p];
+  const payload = getRowPayload(p);
+
+  const btn = document.querySelector(`#brow-${p} .save-row-btn`);
+  if (btn) { btn.textContent = '...'; btn.disabled = true; }
+
+  try {
+    let res;
+    if (s.id) {
+      // UPDATE
+      res = await fetch(`${SB_URL}/rest/v1/daily_sales?id=eq.${s.id}`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': `Bearer ${currentUser.access_token}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(payload)
+      });
+    } else {
+      // INSERT
+      res = await fetch(`${SB_URL}/rest/v1/daily_sales`, {
+        method: 'POST',
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': `Bearer ${currentUser.access_token}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(payload)
+      });
+    }
+    if (!res.ok) throw new Error(await res.text());
+    const returned = await res.json();
+    const saved = Array.isArray(returned) ? returned[0] : returned;
+
+    // Update state
+    bulkRowState[p] = { id: saved?.id || s.id, saved: true, dirty: false, data: { ...payload, id: saved?.id || s.id } };
+
+    // Re-render just this row
+    const tr = document.getElementById('brow-' + p);
+    if (tr) tr.outerHTML = buildBulkRow(p);
+    updateProgress();
+    loadStats();
+    showToast(`${p} saved ✅`, 'success');
+  } catch(e) {
+    showToast(`${p} failed: ` + e.message.slice(0,60), 'error');
+    if (btn) { btn.textContent = 'Save'; btn.disabled = false; }
+  }
+}
+
+async function clearRow(p) {
+  const s = bulkRowState[p];
+  if (!s.id) {
+    // Just clear inputs
+    bulkRowState[p] = { id: null, saved: false, dirty: false, data: {} };
+    const tr = document.getElementById('brow-' + p);
+    if (tr) tr.outerHTML = buildBulkRow(p);
+    updateProgress();
+    return;
+  }
+  if (!confirm(`Delete ${p} entry for ${bulkDate}?`)) return;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/daily_sales?id=eq.${s.id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${currentUser.access_token}` }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    bulkRowState[p] = { id: null, saved: false, dirty: false, data: {} };
+    const tr = document.getElementById('brow-' + p);
+    if (tr) tr.outerHTML = buildBulkRow(p);
+    updateProgress();
+    loadStats();
+    showToast(`${p} entry deleted`, 'success');
+  } catch(e) {
+    showToast('Delete failed: ' + e.message, 'error');
+  }
+}
+
+async function saveAllDirty() {
+  if (!bulkDate) { showToast('Please select a date first', 'error'); return; }
+  const btn = document.getElementById('bulk-save-all-btn');
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  const toSave = PLATFORMS.filter(p => {
+    const s = bulkRowState[p];
+    const payload = getRowPayload(p);
+    // Only save if there's at least revenue or orders
+    return (payload.revenue > 0 || payload.orders > 0) && (s.dirty || !s.saved);
+  });
+
+  if (!toSave.length) {
+    showToast('No new data to save', 'error');
+    btn.disabled = false; btn.textContent = '💾 Save All';
+    return;
+  }
+
+  let saved = 0, failed = 0;
+  for (const p of toSave) {
+    try { await saveRow(p); saved++; }
+    catch(e) { failed++; }
+  }
+
+  btn.disabled = false; btn.textContent = '💾 Save All';
+  showToast(`Saved ${saved} platform${saved>1?'s':''}${failed?' ('+failed+' failed)':''}  ✅`, saved > 0 ? 'success' : 'error');
+}
+
+function updateProgress() {
+  const total = PLATFORMS.length;
+  const done = PLATFORMS.filter(p => bulkRowState[p]?.saved).length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('bulk-progress-fill').style.width = pct + '%';
+  document.getElementById('bulk-progress-label').textContent = `${done} / ${total}`;
+}
+
+// ── HISTORY ──
+let historyData = [];
+
+async function loadHistory() {
+  const body = document.getElementById('history-body');
+  body.className = 'empty'; body.textContent = 'Loading...';
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/daily_sales?select=id,date,platform,revenue,orders,returns,return_units,ad_spend,pending,late_dispatch,notes,roas&order=date.desc&limit=200`, {
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${currentUser.access_token}` }
+    });
+    historyData = await res.json();
+    renderHistory();
+  } catch(e) {
+    body.textContent = 'Error: ' + e.message;
+  }
+}
+
+function renderHistory() {
+  const body = document.getElementById('history-body');
+  const rows = historyData;
+  document.getElementById('hist-count').textContent = rows.length + ' entries';
+  if (!rows.length) { body.className = 'empty'; body.textContent = 'No entries yet'; return; }
+  body.className = '';
+  body.innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Platform</th><th>Revenue</th><th>Orders</th><th>Returns</th><th>Ad Spend</th><th>ROAS</th><th style="min-width:80px;position:sticky;right:0;background:#fafbfc;"></th></tr></thead>
+    <tbody id="hist-rows">${rows.map(r => rowHTML(r)).join('')}</tbody>
+  </table>`;
+}
+
+function rowHTML(r) {
+  return `<tr id="row-${r.id}" data-id="${r.id}">
+    <td>${r.date}</td>
+    <td><span class="badge bbrand">${r.platform}</span></td>
+    <td>₹${Number(r.revenue).toLocaleString('en-IN')}</td>
+    <td>${r.orders ?? '—'}</td>
+    <td>₹${Number(r.returns||0).toLocaleString('en-IN')}</td>
+    <td>₹${Number(r.ad_spend||0).toLocaleString('en-IN')}</td>
+    <td>${Number(r.roas||0).toFixed(2)}</td>
+    <td style="white-space:nowrap;min-width:72px;position:sticky;right:0;background:white;">
+      <button onclick="startEdit(${r.id})" style="background:none;border:1px solid #93c5fd;color:#2563eb;border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:700;margin-right:3px;">✎</button><button onclick="deleteEntry(${r.id})" style="background:none;border:1px solid #fca5a5;color:#dc2626;border-radius:6px;padding:3px 7px;font-size:11px;cursor:pointer;font-weight:700;">✕</button>
+    </td>
+  </tr>`;
+}
+
+function startEdit(id) {
+  const r = historyData.find(x => x.id === id);
+  if (!r) return;
+  const tr = document.getElementById('row-' + id);
+  tr.innerHTML = `
+    <td><input type="date" value="${r.date}" id="e-date-${id}" style="width:120px;padding:5px 6px;border:1.5px solid var(--brand);border-radius:6px;font-size:12px;font-family:inherit;"></td>
+    <td><select id="e-plat-${id}" style="padding:5px 6px;border:1.5px solid var(--brand);border-radius:6px;font-size:12px;font-family:inherit;">
+      ${PLATFORMS.map(p => `<option${p===r.platform?' selected':''}>${p}</option>`).join('')}
+    </select></td>
+    <td><input type="number" value="${r.revenue??''}" id="e-rev-${id}" placeholder="0" style="width:90px;padding:5px 6px;border:1.5px solid var(--brand);border-radius:6px;font-size:12px;font-family:inherit;"></td>
+    <td><input type="number" value="${r.orders??''}" id="e-ord-${id}" placeholder="0" style="width:60px;padding:5px 6px;border:1.5px solid var(--brand);border-radius:6px;font-size:12px;font-family:inherit;"></td>
+    <td><input type="number" value="${r.returns??''}" id="e-ret-${id}" placeholder="0" style="width:80px;padding:5px 6px;border:1.5px solid var(--brand);border-radius:6px;font-size:12px;font-family:inherit;"></td>
+    <td><input type="number" value="${r.ad_spend??''}" id="e-ads-${id}" placeholder="0" style="width:80px;padding:5px 6px;border:1.5px solid var(--brand);border-radius:6px;font-size:12px;font-family:inherit;"></td>
+    <td>—</td>
+    <td style="white-space:nowrap;min-width:72px;">
+      <button onclick="saveEdit(${id})" style="background:var(--green);color:white;border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;font-weight:700;margin-right:3px;">✓</button><button onclick="cancelEdit(${id})" style="background:none;border:1px solid var(--border);color:var(--text2);border-radius:6px;padding:4px 7px;font-size:11px;cursor:pointer;font-weight:700;">✕</button>
+    </td>`;
+}
+
+function cancelEdit(id) {
+  const r = historyData.find(x => x.id === id);
+  if (!r) return;
+  document.getElementById('row-' + id).outerHTML = `<tr id="row-${id}" data-id="${id}">${rowHTML(r).replace(/^<tr[^>]*>/,'').replace(/<\/tr>$/,'')}</tr>`;
+  renderHistory(); // easiest re-render
+}
+
+async function saveEdit(id) {
+  const date     = document.getElementById(`e-date-${id}`).value;
+  const platform = document.getElementById(`e-plat-${id}`).value;
+  const revenue  = parseFloat(document.getElementById(`e-rev-${id}`).value) || 0;
+  const orders   = parseInt(document.getElementById(`e-ord-${id}`).value)   || 0;
+  const returns  = parseFloat(document.getElementById(`e-ret-${id}`).value) || 0;
+  const ad_spend = parseFloat(document.getElementById(`e-ads-${id}`).value) || 0;
+
+  if (!date)     { showToast('Date is required', 'error'); return; }
+  if (!platform) { showToast('Platform is required', 'error'); return; }
+
+  const saveBtn = document.querySelector(`#row-${id} button`);
+  if (saveBtn) { saveBtn.textContent = 'Saving...'; saveBtn.disabled = true; }
+
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/daily_sales?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${currentUser.access_token}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ date, platform, revenue, orders, returns, ad_spend })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('Entry updated ✅', 'success');
+    // Update local cache
+    const idx = historyData.findIndex(x => x.id === id);
+    if (idx >= 0) Object.assign(historyData[idx], { date, platform, revenue, orders, returns, ad_spend });
+    renderHistory();
+    loadStats();
+  } catch(e) {
+    showToast('Update failed: ' + e.message.slice(0,80), 'error');
+    if (saveBtn) { saveBtn.textContent = '✓ Save'; saveBtn.disabled = false; }
+  }
+}
+
+// ── EXPORT CSV ──
+function exportCSV() {
+  if (!historyData.length) { showToast('No data to export', 'error'); return; }
+  const cols = ['date','platform','revenue','orders','returns','return_units','ad_spend','pending','late_dispatch','roas','notes'];
+  const header = cols.join(',');
+  const lines = historyData.map(r => cols.map(c => {
+    const v = r[c] ?? '';
+    return String(v).includes(',') ? `"${v}"` : v;
+  }).join(','));
+  const csv = [header, ...lines].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `specialyou_sales_${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('CSV downloaded ✅', 'success');
+}
+
+// ── TABS ──
+function showTab(name) {
+  ['entry','history','settings'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', name===t);
+    document.getElementById('pane-'+t).style.display = name===t ? 'block' : 'none';
+  });
+  if (name === 'history') loadHistory();
+}
+
+// ── DELETE ENTRY ──
+async function deleteEntry(id) {
+  if (!confirm('Are you sure you want to delete this entry?')) return;
+  try {
+    const res = await fetch(`${SB_URL}/rest/v1/daily_sales?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { 'apikey': SB_KEY, 'Authorization': `Bearer ${currentUser.access_token}` }
+    });
+    if (!res.ok) throw new Error(await res.text());
+    showToast('Entry deleted ✅', 'success');
+    loadHistory();
+    loadStats();
+  } catch(e) {
+    showToast('Delete failed: ' + e.message, 'error');
+  }
+}
+
+// ── CHANGE PASSWORD ──
+async function changePassword() {
+  const np = document.getElementById('s-newpass').value;
+  const cp = document.getElementById('s-confirmpass').value;
+  if (!np || np.length < 6) { showToast('Minimum 6 characters required', 'error'); return; }
+  if (np !== cp) { showToast('Passwords do not match', 'error'); return; }
+  try {
+    const res = await fetch(`${SB_URL}/auth/v1/user`, {
+      method: 'PUT',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': `Bearer ${currentUser.access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password: np })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.msg || data.error);
+    showToast('Password updated ✅', 'success');
+    document.getElementById('s-newpass').value = '';
+    document.getElementById('s-confirmpass').value = '';
+  } catch(e) {
+    showToast('Error: ' + e.message, 'error');
+  }
+}
+
+// ── TOAST ──
+function showToast(msg, type='success') {
+  const existing = document.querySelector('.toast');
+  if (existing) existing.remove();
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
+}
+
+// ── AUTO LOGIN ──
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('sy_entry_session');
+  if (saved) {
+    try {
+      const s = JSON.parse(saved);
+      if (s.expires_at && Date.now()/1000 < s.expires_at) {
+        currentUser = s; initApp(); return;
+      }
+    } catch(e) {}
+    localStorage.removeItem('sy_entry_session');
+  }
+});
+</script>
+</body>
+</html>
